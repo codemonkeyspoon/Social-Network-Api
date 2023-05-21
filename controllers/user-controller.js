@@ -60,6 +60,70 @@ const userController = {
       res.status(400).json(err);
     }
   },
+  // Update user
+  async updateUser({ params, body }, res) {
+    try {
+      const dbUserData = await User.findOneAndUpdate({ _id: params.id }, body, {
+        new: true,
+        runValidators: true,
+      });
+      if (!dbUserData) {
+        res.status(404).json({ message: "No user found with this id" });
+        return;
+      }
+      res.json(dbUserData);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  },
+  // Delete user
+  async deleteUser({ params }, res) {
+    try {
+      const dbUserData = await User.findOneAndDelete({ _id: params.id });
+      if (!dbUserData) {
+        res.status(404).json({ message: "No user found with this id" });
+        return;
+      }
+      res.json(dbUserData);
+    } catch (error) {
+        res.status(400).json(error)
+    }
+  },
+  async createFriend({ params }, res) {
+    try {
+      const dbUserData = await User.findOneAndUpdate(
+        { _id: params.userId },
+        { $push: { friends: params.friendId } },
+        { new: true, runValidators: true }
+      );
+  
+      if (!dbUserData) {
+        return res.status(404).json({ message: "No user found with this id" });
+      }
+  
+      res.json(dbUserData);
+    } catch (err) {
+      res.json(err);
+    }
+  },
+  
+  async deleteFriend({ params }, res) {
+    try {
+      const dbUserData = await User.findOneAndUpdate(
+        { _id: params.userId },
+        { $pull: { friends: params.friendId } },
+        { new: true, runValidators: true }
+      );
+  
+      if (!dbUserData) {
+        return res.status(404).json({ message: "No user found with this id" });
+      }
+  
+      res.json(dbUserData);
+    } catch (err) {
+      res.json(err);
+    }
+  }
 };
 
 module.exports = userController;
