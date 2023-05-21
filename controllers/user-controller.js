@@ -86,7 +86,7 @@ const userController = {
       }
       res.json(dbUserData);
     } catch (error) {
-        res.status(400).json(error)
+      res.status(400).json(error);
     }
   },
   async createFriend({ params }, res) {
@@ -96,17 +96,17 @@ const userController = {
         { $push: { friends: params.friendId } },
         { new: true, runValidators: true }
       );
-  
+
       if (!dbUserData) {
         return res.status(404).json({ message: "No user found with this id" });
       }
-  
+
       res.json(dbUserData);
     } catch (err) {
       res.json(err);
     }
   },
-  
+
   async deleteFriend({ params }, res) {
     try {
       const dbUserData = await User.findOneAndUpdate(
@@ -114,16 +114,16 @@ const userController = {
         { $pull: { friends: params.friendId } },
         { new: true, runValidators: true }
       );
-  
+
       if (!dbUserData) {
         return res.status(404).json({ message: "No user found with this id" });
       }
-  
+
       res.json(dbUserData);
     } catch (err) {
       res.json(err);
     }
-  }
+  },
 };
 
 module.exports = userController;
